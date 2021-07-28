@@ -1,8 +1,16 @@
-import basket.Basket;
+import basket.BasketImpl;
+import grocery.Price;
 
 public class Main {
     public static void main(String[] args) {
-        System.out.println("Общая стоимость:\n=" + new Basket()
-                .calculateTotalCost("abcdaban"));
+
+        BasketImpl basket = new BasketImpl(() -> Price.goodsPrice);
+
+        basket.calculateTotalCost("abcdaba");
+
+        //basket.calculateTotalCost("NOabcdaba");
+        //basket.calculateTotalCost("~gg~");
+        //basket.calculateTotalCost("");
+        //basket.calculateTotalCost(null);
     }
 }

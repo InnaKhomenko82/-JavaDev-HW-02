@@ -1,43 +1,68 @@
 package basket;
-import grocery.GoodsImpl;
+import grocery.Goods;
 import grocery.Price;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-public class Basket {
+public class BasketImpl implements Price {
+
+    private final HashMap<Character, Goods> basketGoods;
+
+    public BasketImpl(Price price){
+        basketGoods = price.getAllGoods();
+    }
+
+    @Override
+    public HashMap<Character, Goods> getAllGoods() {
+        return basketGoods;
+    }
+
     public double calculateTotalCost(String basket) {
-        double totalsum = 0;
+        double totalcost = 0.0d;
         String clearBasket = recognizedBasket(basket);
+
         System.out.println("\nТовары в корзине:\n" + clearBasket);
-        Price goods = new Price();
-        for(char goodsID: goods.goodsPrice.keySet()){
+        priceContainsGoods(clearBasket);
+
+        for(char goodsID: basketGoods.keySet()){
             long quantity = countQuantity(clearBasket).get(goodsID);
             System.out.print(quantity + " X ");
             System.out.print("Tовар " + goodsID);
-            GoodsImpl a = (GoodsImpl) goods.goodsPrice.get(goodsID);
+            Goods a = basketGoods.get(goodsID);
             System.out.println(" (" + a.getName() + ")");
             if (quantity>=a.getDiscountQuantity()){
-                double sum = quantity/a.getDiscountQuantity()*a.getDiscountPrice()+
+                double cost = quantity/a.getDiscountQuantity()*a.getDiscountPrice()+
                         quantity%a.getDiscountQuantity()*a.getPrice();
-                System.out.println("= " + sum);
-                totalsum = totalsum + sum;
+                System.out.println("= " + cost);
+                totalcost = totalcost + cost;
             } else {
-                double sum = quantity * a.getPrice();
-                System.out.println("= " + sum);
-                totalsum = totalsum + sum;
+                double cost = quantity * a.getPrice();
+                System.out.println("= " + cost);
+                totalcost = totalcost + cost;
             }
         }
-        return totalsum;
+        System.out.println("****************");
+        System.out.println("Общая стоимость:\n=" + totalcost);
+        return totalcost;
     }
 
     private String recognizedBasket(String basket) {
-        if (basket != null && !basket.isEmpty()){
+        if (basket != null && !basket.isEmpty()&& basket.matches("[a-zA-Z]+")){
             return Arrays.stream(basket.toUpperCase().split(" ")).collect(Collectors.joining());
         } else {
             throw new NullPointerException("Wrong product key");
         }
+    }
+
+    private void priceContainsGoods(String basket) {
+        for (char a: basket.toCharArray()){
+            if (!goodsPrice.containsKey(a)){
+                System.out.println("товара " + a + " нет в продаже");
+            }
+        }
+        System.out.println("****************");
     }
 
     private static Map<Character, Integer> countQuantity (String basket){
