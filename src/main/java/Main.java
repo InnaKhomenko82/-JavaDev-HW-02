@@ -8,6 +8,7 @@ public class Main {
 
         basket.calculateTotalCost("abcdaba");
 
+        //basket.calculateTotalCost("a b c d a b a");
         //basket.calculateTotalCost("NOabcdaba");
         //basket.calculateTotalCost("~gg~");
         //basket.calculateTotalCost("");
